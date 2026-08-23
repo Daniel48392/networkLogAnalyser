@@ -1,10 +1,10 @@
 package logData;
 
 import logActivityAnalysis.activityAnalyser;
-import logActivityAnalysis.bruteForceTracker;
+import logActivityAnalysis.activityTrackers.bruteForceTracker;
+import logActivityAnalysis.activityTrackers.passwordSprayTracker;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.List;
 
 public class logCollection {
@@ -15,6 +15,11 @@ public class logCollection {
         List<bruteForceTracker> bruteForceThreats = activityAnalyser.bruteForceDetector(collectionLogs);
         System.out.println("Highest Risk Brute Force Threats: ");
         for (bruteForceTracker tracker : bruteForceThreats) {
+            System.out.println(tracker.toString());
+        }
+        List<passwordSprayTracker> passwordSprayThreats = activityAnalyser.passwordSprayDetector(collectionLogs);
+        System.out.println("Highest Risk Password Spray Threats: ");
+        for (passwordSprayTracker tracker : passwordSprayThreats){
             System.out.println(tracker.toString());
         }
     }

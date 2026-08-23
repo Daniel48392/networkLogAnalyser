@@ -1,4 +1,6 @@
 package logActivityAnalysis;
+import logActivityAnalysis.activityTrackers.bruteForceTracker;
+import logActivityAnalysis.activityTrackers.passwordSprayTracker;
 import logData.log;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,6 +34,36 @@ public class activityAnalyser {
         }
         return threats;
     }
+
+
+    public static List<passwordSprayTracker> passwordSprayDetector(List<log> collectionLog){
+        record sprayKey(String src, String dst){}
+        HashMap<String, passwordSprayTracker> spraySuspect = new HashMap<>();
+        for (log log : collectionLog) {
+            if (!(log.getDuser() == null)) {
+                String key = log.getSrc();
+                if (spraySuspect.containsKey(key)) {
+                    passwordSprayTracker tracker = spraySuspect.get(key);
+                    tracker.passwordSprayAttempt(log.getDuser()); // Increments attempts by 1
+                    passwordSprayTracker.attemptCheck(tracker, log.getEventReadable(), log.getMsg(), log.getAct());
+                } else {
+                    passwordSprayTracker tracker = new passwordSprayTracker(log.getSrc(), log.getDst(), log.getSuser(), log.getDuser());
+                    spraySuspect.put(key, tracker);
+                    passwordSprayTracker.attemptCheck(tracker, log.getEventReadable(), log.getMsg(), log.getAct());
+                }
+            }
+        }
+        List<passwordSprayTracker> threats = new ArrayList<>();
+        for (passwordSprayTracker tracker : spraySuspect.values()) {
+            if (tracker.getNumberOfUniqueAccounts() > 5) {
+                threats.add(tracker);
+            }
+        }
+        return threats;
+    }
+
+
+
     // Password spraying multiple duser from the same IP address
     // Port scanning multiple ports being denied to the same IP from the same IP
     // DDOS multiple of the similar logs

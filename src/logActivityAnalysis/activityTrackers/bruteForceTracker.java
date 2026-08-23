@@ -1,4 +1,4 @@
-package logActivityAnalysis;
+package logActivityAnalysis.activityTrackers;
 import java.time.Instant;
 
 
