@@ -1,3 +1,5 @@
+package logData;
+
 public class logExtensionParser {
     /**
      *

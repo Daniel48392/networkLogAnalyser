@@ -1,8 +1,11 @@
+package logData;
+
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import static java.lang.Integer.parseInt;
+
 
 public class log { // CEF - common event format
     private String cef_version;
@@ -42,7 +45,26 @@ public class log { // CEF - common event format
         productVersion = rawLog.substring(dividerThree+1, dividerFour);
         event = rawLog.substring(dividerFour+1, dividerFive);
         eventReadable = rawLog.substring(dividerFive+1, dividerSix);
-        severity = parseInt(rawLog.substring(dividerSix+1, dividerSeven));
+        try {
+            severity = parseInt(rawLog.substring(dividerSix+1, dividerSeven));
+        }
+        catch (NumberFormatException e) {
+            if (rawLog.substring(dividerSix+1, dividerSeven).toLowerCase().equals("very low") || rawLog.substring(dividerSix+1, dividerSeven).toLowerCase().equals("informational")) {
+                severity = 0;
+            }
+            else if (rawLog.substring(dividerSix+1, dividerSeven).toLowerCase().equals("low")) {
+                severity = 3;
+            }
+            else if (rawLog.substring(dividerSix+1, dividerSeven).toLowerCase().equals("medium")) {
+                severity = 5;
+            }
+            else if (rawLog.substring(dividerSix+1, dividerSeven).toLowerCase().equals("high")) {
+                severity = 8;
+            }
+            else if (rawLog.substring(dividerSix+1, dividerSeven).toLowerCase().equals("very high") || rawLog.substring(dividerSix+1, dividerSeven).toLowerCase().equals("critical")) {
+                severity = 10;
+            }
+        }
         String rawExtensions = rawLog.substring(dividerSeven+1);
 
 
@@ -116,30 +138,6 @@ public class log { // CEF - common event format
         else {
             proto = null;
         }
-
-
-//        System.out.println(src);
-//        System.out.println(dst);
-//        System.out.println(spt);
-//        System.out.println(dport);
-//        System.out.println(duser);
-//        System.out.println(suser);
-//        System.out.println(rt);
-//        System.out.println(act);
-//        System.out.println(msg);
-//        System.out.println(proto);
-
-
-
-
-
-
-
-
-
-
-
-
     }
 
     public String getCef_version() {
@@ -212,7 +210,7 @@ public class log { // CEF - common event format
 
     @Override
     public String toString() {
-        return "log{" +
+        return "logData.log{" +
                 "cef_version='" + cef_version + '\'' +
                 ", vendor='" + vendor + '\'' +
                 ", product='" + product + '\'' +

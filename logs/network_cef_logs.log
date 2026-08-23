@@ -1,0 +1,5 @@
+CEF:0|Palo Alto Networks|PAN-OS|10.1.0|TRAFFIC|deny|7|src=192.168.1.105 dst=10.0.0.50 spt=54321 dport=443 proto=tcp act=deny cat=Firewall cnt=1 cs1Label=Rule cs1=Block_Malicious_IPs
+CEF:0|Cisco|ASA|9.14|106023|Teardrop attack|9|src=185.220.101.5 dst=172.16.5.10 spt=0 dport=0 proto=udp act=dropped cs1Label=Context cs1=Outside_DMZ
+CEF:0|Fortinet|FortiGate|6.4.5|00013|web filter violation|5|src=192.168.1.120 dst=93.184.216.34 spt=61002 dport=80 proto=tcp act=blocked cat=Web_Filter request=http://example.com/malware
+CEF:0|Check Point|SmartDefense|R80.40|202|Port Scan Detected|6|src=203.0.113.42 dst=192.168.1.1 spt=39110 dport=0 proto=tcp act=alerted cnt=45
+CEF:0|F5|BIG-IP ASM|15.1.0|2000021|SQL Injection Attempt|10|src=198.51.100.12 dst=10.100.20.5 spt=44321 dport=443 proto=tcp act=blocked request=SELECT * FROM users

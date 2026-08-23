@@ -1,0 +1,3 @@
+CEF:0|VendorA|FirewallX|v10.2|403|Traffic Denied|7|src=192.168.1.50 dst=10.0.0.22 spt=54321 dport=443 proto=TCP act=deny
+CEF:0|VendorB|IDSSystem|v4.1|2001|SQL Injection Attempt|9|src=185.220.101.5 dst=192.168.1.10 spt=39210 dport=80 proto=TCP msg=Malicious SQL syntax detected
+CEF:0|VendorC|IdentityManager|v5.0|1001|User Login Success|3|duser=admin src=192.168.1.100 outcome=success
