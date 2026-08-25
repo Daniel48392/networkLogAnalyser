@@ -3,13 +3,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class passwordSprayTracker {
-    private String src;
-    private String dst;
-    private String suser;
+    private final String src;
+    private final String dst;
+    private final String suser;
     private List<String> duser = new ArrayList<String>();
     private Integer numberOfUniqueAccounts = 0;
     private Integer FailedAttempts = 0;
-    private Integer SuccesfulAttempts = 0;
+    private Integer SuccessfulAttempts = 0;
     private Integer UnknownAttempts = 0;
 
     public passwordSprayTracker(String src, String dst, String suser, String duser) {
@@ -32,7 +32,7 @@ public class passwordSprayTracker {
             if (eventReadable.toLowerCase().contains("fail") || eventReadable.toLowerCase().contains("invalid") || eventReadable.toLowerCase().contains("incorrect") || eventReadable.toLowerCase().contains("denied")) {
                 tracker.FailedAttempts++;
             } else if (eventReadable.toLowerCase().contains("success") || eventReadable.toLowerCase().contains("valid") || eventReadable.toLowerCase().contains("grant")) {
-                tracker.SuccesfulAttempts++;
+                tracker.SuccessfulAttempts++;
             }
             else  {
                 tracker.UnknownAttempts++;
@@ -42,7 +42,7 @@ public class passwordSprayTracker {
             if (msg.toLowerCase().contains("fail") || msg.toLowerCase().contains("invalid") || msg.toLowerCase().contains("incorrect") || msg.toLowerCase().contains("denied")) {
                 tracker.FailedAttempts++;
             } else if (msg.toLowerCase().contains("success") || msg.toLowerCase().contains("valid") || msg.toLowerCase().contains("grant")) {
-                tracker.SuccesfulAttempts++;
+                tracker.SuccessfulAttempts++;
             }
             else  {
                 tracker.UnknownAttempts++;
@@ -52,7 +52,7 @@ public class passwordSprayTracker {
             if (act.toLowerCase().contains("fail") || act.toLowerCase().contains("denied")) {
                 tracker.FailedAttempts++;
             } else if (act.toLowerCase().contains("success") || act.toLowerCase().contains("allow") || eventReadable.toLowerCase().contains("login") || eventReadable.toLowerCase().contains("authenticated")) {
-                tracker.SuccesfulAttempts++;
+                tracker.SuccessfulAttempts++;
             }
             else  {
                 tracker.UnknownAttempts++;
@@ -72,10 +72,10 @@ public class passwordSprayTracker {
         return "/////////////////////////" + "\nSource IP: " + src +
                 "\nDestination IP: " + dst +
                 "\nSource User: " + suser +
-                "\nAccounts Targeted: " + numberOfUniqueAccounts +
+                "\nNumber of Accounts Targeted: " + numberOfUniqueAccounts +
                 "\nTargeted Accounts:\n- " + String.join("\n- ", duser) +
                 "\nFailed: " + FailedAttempts +
-                "\nSuccessful: " + SuccesfulAttempts +
+                "\nSuccessful: " + SuccessfulAttempts +
                 "\nUnknown: " + UnknownAttempts +
                 "\n/////////////////////////";
     }

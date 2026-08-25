@@ -1,6 +1,8 @@
 package logActivityAnalysis;
 import logActivityAnalysis.activityTrackers.bruteForceTracker;
 import logActivityAnalysis.activityTrackers.passwordSprayTracker;
+import logActivityAnalysis.activityTrackers.portScanHorizontalTracker;
+import logActivityAnalysis.activityTrackers.portScanVerticalTracker;
 import logData.log;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +39,6 @@ public class activityAnalyser {
 
 
     public static List<passwordSprayTracker> passwordSprayDetector(List<log> collectionLog){
-        record sprayKey(String src, String dst){}
         HashMap<String, passwordSprayTracker> spraySuspect = new HashMap<>();
         for (log log : collectionLog) {
             if (!(log.getDuser() == null)) {
@@ -62,9 +63,59 @@ public class activityAnalyser {
         return threats;
     }
 
+    public static List<portScanVerticalTracker> portScanVerticalDetector(List<log> collectionLog){
+        record PortScanKey (String src, String dst){}
+        HashMap<PortScanKey, portScanVerticalTracker> scanSuspect = new HashMap<>();
+        for  (log log : collectionLog) {
+            if (!(log.getDport() == null)) {
+                PortScanKey key = new PortScanKey(log.getSrc(), log.getDst());
+                if (scanSuspect.containsKey(key)) {
+                    portScanVerticalTracker tracker = scanSuspect.get(key);
+                    tracker.portScanAttempt(log.getDport(), log.getRt());
+                } else {
+                    portScanVerticalTracker tracker = new portScanVerticalTracker(log.getSrc(), log.getDst(), log.getDport(), log.getRt());
+                    scanSuspect.put(key, tracker);
+                }
+            }
+        }
+        List<portScanVerticalTracker> threats = new ArrayList<>();
+        for (portScanVerticalTracker tracker : scanSuspect.values()) {
+            if (tracker.getScanCount()>10) {
+                threats.add(tracker);
+            }
+        }
+        return threats;
+    }
+
+    public static List<portScanHorizontalTracker> portScanHorizontalDetector(List<log> collectionLog){
+        record  PortScanKey (String src, String dport){}
+        HashMap<PortScanKey, portScanHorizontalTracker> scanSuspect = new HashMap<>();
+        for  (log log : collectionLog) {
+            if (!(log.getDst() == null)) {
+                PortScanKey key = new PortScanKey(log.getSrc(), log.getDport());
+                if (scanSuspect.containsKey(key)) {
+                    portScanHorizontalTracker tracker = scanSuspect.get(key);
+                    tracker.portScanAttempt(log.getDst(), log.getRt());
+                } else {
+                    portScanHorizontalTracker tracker = new portScanHorizontalTracker(log.getSrc(), log.getDst(), log.getDport(), log.getRt());
+                    scanSuspect.put(key, tracker);
+                }
+            }
+        }
+        List<portScanHorizontalTracker> threats = new ArrayList<>();
+        for (portScanHorizontalTracker tracker : scanSuspect.values()) {
+            if (tracker.getScanCount()>10) {
+                threats.add(tracker);
+            }
+        }
+        return threats;
+    }
 
 
-    // Password spraying multiple duser from the same IP address
+
+
+
+
     // Port scanning multiple ports being denied to the same IP from the same IP
     // DDOS multiple of the similar logs
     // SQL or injection attempts

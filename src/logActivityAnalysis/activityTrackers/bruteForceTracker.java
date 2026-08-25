@@ -3,13 +3,13 @@ import java.time.Instant;
 
 
 public class bruteForceTracker {
-    private String src; // Source IP
-    private String duser; // Destination user
-    private Instant firstSeen; // First occurrence
+    private final String src; // Source IP
+    private final String duser; // Destination user
+    private final Instant firstSeen; // First occurrence
     private Instant lastSeen; // Last occurrence
     private Integer counter = 0; // Number of detections
     private Integer FailedAttempts = 0;
-    private Integer SuccesfulAttempts = 0;
+    private Integer SuccessfulAttempts = 0;
     private Integer UnknownAttempts = 0;
 
     public bruteForceTracker(String src, String duser, Instant timestamp){
@@ -30,7 +30,7 @@ public class bruteForceTracker {
             if (eventReadable.toLowerCase().contains("fail") || eventReadable.toLowerCase().contains("invalid") || eventReadable.toLowerCase().contains("incorrect") || eventReadable.toLowerCase().contains("denied")) {
                 tracker.FailedAttempts++;
             } else if (eventReadable.toLowerCase().contains("success") || eventReadable.toLowerCase().contains("valid") || eventReadable.toLowerCase().contains("grant")) {
-                tracker.SuccesfulAttempts++;
+                tracker.SuccessfulAttempts++;
             }
             else  {
                 tracker.UnknownAttempts++;
@@ -40,7 +40,7 @@ public class bruteForceTracker {
             if (msg.toLowerCase().contains("fail") || msg.toLowerCase().contains("invalid") || msg.toLowerCase().contains("incorrect") || msg.toLowerCase().contains("denied")) {
                 tracker.FailedAttempts++;
             } else if (msg.toLowerCase().contains("success") || msg.toLowerCase().contains("valid") || msg.toLowerCase().contains("grant")) {
-                tracker.SuccesfulAttempts++;
+                tracker.SuccessfulAttempts++;
             }
             else  {
                 tracker.UnknownAttempts++;
@@ -50,7 +50,7 @@ public class bruteForceTracker {
             if (act.toLowerCase().contains("fail") || act.toLowerCase().contains("denied")) {
                 tracker.FailedAttempts++;
             } else if (act.toLowerCase().contains("success") || act.toLowerCase().contains("allow") || eventReadable.toLowerCase().contains("login") || eventReadable.toLowerCase().contains("authenticated")) {
-                tracker.SuccesfulAttempts++;
+                tracker.SuccessfulAttempts++;
             }
             else  {
                 tracker.UnknownAttempts++;
@@ -74,7 +74,7 @@ public class bruteForceTracker {
                 "\nLast Seen: " + lastSeen +
                 "\nAttempts: " + counter +
                 "\nFailed: " + FailedAttempts +
-                "\nSuccessful: " + SuccesfulAttempts +
+                "\nSuccessful: " + SuccessfulAttempts +
                 "\nUnknown: " + UnknownAttempts +
                 "\n/////////////////////////";
     }

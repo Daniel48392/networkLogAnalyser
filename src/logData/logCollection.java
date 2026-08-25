@@ -1,8 +1,9 @@
 package logData;
-
 import logActivityAnalysis.activityAnalyser;
 import logActivityAnalysis.activityTrackers.bruteForceTracker;
 import logActivityAnalysis.activityTrackers.passwordSprayTracker;
+import logActivityAnalysis.activityTrackers.portScanHorizontalTracker;
+import logActivityAnalysis.activityTrackers.portScanVerticalTracker;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,6 +23,17 @@ public class logCollection {
         for (passwordSprayTracker tracker : passwordSprayThreats){
             System.out.println(tracker.toString());
         }
+        List<portScanVerticalTracker>  portScanVerticalThreats = activityAnalyser.portScanVerticalDetector(collectionLogs);
+        System.out.println("Highest Risk Vertical Port Scan Threats: ");
+        for (portScanVerticalTracker tracker : portScanVerticalThreats){
+            System.out.println(tracker.toString());
+        }
+        List<portScanHorizontalTracker> portScanHorizontalThreats = activityAnalyser.portScanHorizontalDetector(collectionLogs);
+        System.out.println("Highest Risk Horizontal Port Scan Threats: ");
+        for (portScanHorizontalTracker tracker : portScanHorizontalThreats){
+            System.out.println(tracker.toString());
+        }
     }
+
 
 }
