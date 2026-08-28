@@ -2,8 +2,7 @@ package logActivityAnalysis.activityTrackers;
 import java.time.Instant;
 
 
-public class bruteForceTracker {
-    private final String src; // Source IP
+public class bruteForceTracker extends tracker {
     private final String duser; // Destination user
     private final Instant firstSeen; // First occurrence
     private Instant lastSeen; // Last occurrence

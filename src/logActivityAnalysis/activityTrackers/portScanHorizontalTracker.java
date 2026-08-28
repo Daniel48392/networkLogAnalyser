@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 // Different destination IP same ports
-public class portScanHorizontalTracker {
-    private final String src;
+public class portScanHorizontalTracker extends tracker {
     private List<String> dsts = new ArrayList<>();
     private Integer scanCount = 0;
     private final String dport;

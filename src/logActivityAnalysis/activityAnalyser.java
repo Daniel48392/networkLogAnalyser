@@ -3,6 +3,8 @@ import logActivityAnalysis.activityTrackers.bruteForceTracker;
 import logActivityAnalysis.activityTrackers.passwordSprayTracker;
 import logActivityAnalysis.activityTrackers.portScanHorizontalTracker;
 import logActivityAnalysis.activityTrackers.portScanVerticalTracker;
+import logActivityAnalysis.activityTrackers.denialOfServiceTracker;
+import logActivityAnalysis.activityTrackers.distributedDenialofServiceMonitor;
 import logData.log;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -111,12 +113,33 @@ public class activityAnalyser {
         return threats;
     }
 
+    public static List<denialOfServiceTracker> denialOfServiceDetector (List<log> collectionLog){
+        HashMap<String, denialOfServiceTracker> scanSuspect = new HashMap<>();
+        for  (log log : collectionLog) {
+            if (!(log.getSrc() == null)) {
+                String key = log.getSrc();
+                if (scanSuspect.containsKey(key)) {
+                    denialOfServiceTracker tracker = scanSuspect.get(key);
+                    tracker.counterIncrement(log.getDst(), log.getRt());
+                } else {
+                    denialOfServiceTracker tracker = new denialOfServiceTracker(log.getSrc(), log.getDst(), log.getRt());
+                    scanSuspect.put(key, tracker);
+                }
+            }
+        }
+        List<denialOfServiceTracker> threats = new ArrayList<>();
+        for (denialOfServiceTracker tracker : scanSuspect.values()) {
+            if (tracker.getCounter()>30) {
+                threats.add(tracker);
+            }
+        }
+        return threats;
+    }
 
 
 
 
 
-    // Port scanning multiple ports being denied to the same IP from the same IP
     // DDOS multiple of the similar logs
     // SQL or injection attempts
 

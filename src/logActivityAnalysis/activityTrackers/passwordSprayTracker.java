@@ -2,8 +2,7 @@ package logActivityAnalysis.activityTrackers;
 import java.util.ArrayList;
 import java.util.List;
 
-public class passwordSprayTracker {
-    private final String src;
+public class passwordSprayTracker extends tracker{
     private final String dst;
     private final String suser;
     private List<String> duser = new ArrayList<String>();
