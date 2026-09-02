@@ -6,7 +6,6 @@ public class passwordSprayTracker extends tracker{
     private final String dst;
     private final String suser;
     private List<String> duser = new ArrayList<String>();
-    private Integer numberOfUniqueAccounts = 0;
     private Integer FailedAttempts = 0;
     private Integer SuccessfulAttempts = 0;
     private Integer UnknownAttempts = 0;
@@ -16,13 +15,13 @@ public class passwordSprayTracker extends tracker{
         this.dst = dst;
         this.suser = suser;
         this.duser.add(duser);
-        this.numberOfUniqueAccounts +=1;
+        this.count +=1;
     }
 
     public void passwordSprayAttempt(String duser){
         if (!(this.duser.contains(duser))) {
             this.duser.add(duser);
-            this.numberOfUniqueAccounts +=1;
+            this.count +=1;
         }
     }
 
@@ -62,20 +61,19 @@ public class passwordSprayTracker extends tracker{
         }
     }
 
-    public Integer getNumberOfUniqueAccounts() {
-        return numberOfUniqueAccounts;
-    }
+
 
     @Override
     public String toString() {
         return "/////////////////////////" + "\nSource IP: " + src +
                 "\nDestination IP: " + dst +
                 "\nSource User: " + suser +
-                "\nNumber of Accounts Targeted: " + numberOfUniqueAccounts +
+                "\nNumber of Accounts Targeted: " + count +
                 "\nTargeted Accounts:\n- " + String.join("\n- ", duser) +
                 "\nFailed: " + FailedAttempts +
                 "\nSuccessful: " + SuccessfulAttempts +
                 "\nUnknown: " + UnknownAttempts +
+                "\nThreat Level: " + threatLevel + " " + "|" + threatRisk + "|"+
                 "\n/////////////////////////";
     }
 }

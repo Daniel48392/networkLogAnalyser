@@ -20,7 +20,7 @@ public class log { // CEF - common event format
     private String src; // Source IP
     private String dst; // Destination IP
     private String spt; // Source Port
-    private String dport; // Destination Port
+    private String dpt; // Destination Port
     private String duser; // Destination user
     private String suser; // Source user
     private Instant rt; // Receipt time
@@ -90,11 +90,11 @@ public class log { // CEF - common event format
         else {
             spt = null;
         }
-        if (!(rawExtensions.indexOf("dport=")==-1) && ((rawExtensions.indexOf("dport=")==0) || (rawExtensions.charAt(rawExtensions.indexOf("dport=")-1) == ' '))){
-            dport = rawExtensions.substring(rawExtensions.indexOf("dport=")+6, logExtensionParser.spaceFinder(rawExtensions, "dport="));
+        if (!(rawExtensions.indexOf("dpt=")==-1) && ((rawExtensions.indexOf("dpt=")==0) || (rawExtensions.charAt(rawExtensions.indexOf("dpt=")-1) == ' '))){
+            dpt = rawExtensions.substring(rawExtensions.indexOf("dpt=")+4, logExtensionParser.spaceFinder(rawExtensions, "dpt="));
         }
         else {
-            dport = null;
+            dpt = null;
         }
         if (!(rawExtensions.indexOf("duser=")==-1) && ((rawExtensions.indexOf("duser=")==0) || (rawExtensions.charAt(rawExtensions.indexOf("duser=")-1) == ' '))){
             duser = rawExtensions.substring(rawExtensions.indexOf("duser=")+6, logExtensionParser.spaceFinder(rawExtensions, "duser="));
@@ -180,8 +180,8 @@ public class log { // CEF - common event format
         return spt;
     }
 
-    public String getDport() {
-        return dport;
+    public String getDpt() {
+        return dpt;
     }
 
     public String getDuser() {
@@ -221,7 +221,7 @@ public class log { // CEF - common event format
                 ", src='" + src + '\'' +
                 ", dst='" + dst + '\'' +
                 ", spt='" + spt + '\'' +
-                ", dport='" + dport + '\'' +
+                ", dpt='" + dpt + '\'' +
                 ", duser='" + duser + '\'' +
                 ", suser='" + suser + '\'' +
                 ", rt=" + rt +

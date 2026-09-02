@@ -6,7 +6,6 @@ public class bruteForceTracker extends tracker {
     private final String duser; // Destination user
     private final Instant firstSeen; // First occurrence
     private Instant lastSeen; // Last occurrence
-    private Integer counter = 0; // Number of detections
     private Integer FailedAttempts = 0;
     private Integer SuccessfulAttempts = 0;
     private Integer UnknownAttempts = 0;
@@ -16,11 +15,11 @@ public class bruteForceTracker extends tracker {
         this.duser = duser;
         firstSeen = timestamp;
         lastSeen = timestamp;
-        counter +=1;
+        count +=1;
     }
 
     public void counterIncrement(Instant timestamp){
-        counter+=1;
+        count+=1;
         lastSeen = timestamp;
     }
 
@@ -61,9 +60,6 @@ public class bruteForceTracker extends tracker {
     }
 
 
-    public Integer getCounter() {
-        return counter;
-    }
 
     @Override
     public String toString() {
@@ -71,10 +67,11 @@ public class bruteForceTracker extends tracker {
                 "\nTarget User: " + duser +
                 "\nFirst Seen: " + firstSeen +
                 "\nLast Seen: " + lastSeen +
-                "\nAttempts: " + counter +
+                "\nAttempts: " + count +
                 "\nFailed: " + FailedAttempts +
                 "\nSuccessful: " + SuccessfulAttempts +
                 "\nUnknown: " + UnknownAttempts +
+                "\nThreat Level: " + threatLevel + " " + "|" + threatRisk + "|"+
                 "\n/////////////////////////";
     }
 }

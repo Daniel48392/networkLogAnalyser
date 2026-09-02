@@ -3,39 +3,56 @@ import logActivityAnalysis.activityAnalyser;
 import logActivityAnalysis.activityTrackers.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class logCollection {
-    private static List<log> collectionLogs;
+    private static List<log> collectionLogs = new ArrayList<>();
+    public static List<bruteForceTracker> bruteForceThreats = new ArrayList<>();
+    public static List<passwordSprayTracker> passwordSprayThreats = new ArrayList<>();
+    public static List<portScanVerticalTracker>  portScanVerticalThreats = new ArrayList<>();
+    public static List<portScanHorizontalTracker>  portScanHorizontalThreats =  new ArrayList<>();
+    public static List<denialOfServiceTracker> denialOfServiceThreats = new ArrayList<>();
+
     // contains all instantiated logs
-    public static void main(String[] args) throws IOException {
-        collectionLogs = logReader.fileReader("moreCEF.log");
-        List<bruteForceTracker> bruteForceThreats = activityAnalyser.bruteForceDetector(collectionLogs);
-        System.out.println("Highest Risk Brute Force Threats: ");
-        for (bruteForceTracker tracker : bruteForceThreats) {
-            System.out.println(tracker.toString());
+    public static void organiseLogs(String filename) throws IOException {
+
+        while(logReader.endOfFile != true){
+            collectionLogs.addAll(logReader.fileReader(filename));
+            activityAnalyser.bruteForceDetector(collectionLogs);
+            activityAnalyser.passwordSprayDetector(collectionLogs);
+            activityAnalyser.portScanVerticalDetector(collectionLogs);
+            activityAnalyser.portScanHorizontalDetector(collectionLogs);
+            activityAnalyser.denialOfServiceDetector(collectionLogs);
         }
-        List<passwordSprayTracker> passwordSprayThreats = activityAnalyser.passwordSprayDetector(collectionLogs);
-        System.out.println("Highest Risk Password Spray Threats: ");
-        for (passwordSprayTracker tracker : passwordSprayThreats){
-            System.out.println(tracker.toString());
+
+        bruteForceThreats = activityAnalyser.getBruteForceThreats();
+        passwordSprayThreats = activityAnalyser.getPasswordSprayThreats();
+        portScanVerticalThreats = activityAnalyser.getPortScanVerticalThreats();
+        portScanHorizontalThreats = activityAnalyser.getPortScanHorizontalThreats();
+        denialOfServiceThreats = activityAnalyser.getDenialOfServiceThreats();
+
+
+        for (bruteForceTracker threat : bruteForceThreats){ // Repeat for others
+            threat.setThreat();
         }
-        List<portScanVerticalTracker>  portScanVerticalThreats = activityAnalyser.portScanVerticalDetector(collectionLogs);
-        System.out.println("Highest Risk Vertical Port Scan Threats: ");
-        for (portScanVerticalTracker tracker : portScanVerticalThreats){
-            System.out.println(tracker.toString());
+        for (passwordSprayTracker threat : passwordSprayThreats){
+            threat.setThreat();
         }
-        List<portScanHorizontalTracker> portScanHorizontalThreats = activityAnalyser.portScanHorizontalDetector(collectionLogs);
-        System.out.println("Highest Risk Horizontal Port Scan Threats: ");
-        for (portScanHorizontalTracker tracker : portScanHorizontalThreats){
-            System.out.println(tracker.toString());
+        for (portScanVerticalTracker threat : portScanVerticalThreats){
+            threat.setThreat();
         }
-        List<denialOfServiceTracker> denialOfServiceThreats = activityAnalyser.denialOfServiceDetector(collectionLogs);
-        System.out.println("Highest Risk Denial Of Service Threats: ");
-        for (denialOfServiceTracker tracker : denialOfServiceThreats){
-            System.out.println(tracker.toString());
+        for (portScanHorizontalTracker threat : portScanHorizontalThreats){
+            threat.setThreat();
         }
+        for (denialOfServiceTracker threat : denialOfServiceThreats){
+            threat.setThreat();
+        }
+
+
+
+
+
+
     }
-
-
 }
