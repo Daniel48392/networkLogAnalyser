@@ -1,5 +1,6 @@
 package logActivityAnalysis.activityTrackers;
 
+import logData.log;
 import logData.logReader;
 
 public class tracker {
@@ -7,6 +8,9 @@ public class tracker {
     protected float threatLevel;
     protected String threatRisk;
     protected Integer count = 0;
+    protected log logUsed;
+
+    public String getSrc() {return src;}
 
     public Integer getCount() {
         return count;

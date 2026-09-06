@@ -26,9 +26,8 @@ public class Main {
             System.out.println(tracker); // Working
         }
         System.out.println("Denial Of Service");
-        for (denialOfServiceTracker tracker : logCollection.denialOfServiceThreats){
+        for (denialOfServiceTracker tracker : logCollection.denialOfServiceThreatsFiltered){
             System.out.println(tracker);
         }
-
     }
 }

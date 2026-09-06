@@ -8,12 +8,16 @@ import java.util.List;
 
 public class logCollection {
     private static List<log> collectionLogs = new ArrayList<>();
+
     public static List<bruteForceTracker> bruteForceThreats = new ArrayList<>();
     public static List<passwordSprayTracker> passwordSprayThreats = new ArrayList<>();
     public static List<portScanVerticalTracker>  portScanVerticalThreats = new ArrayList<>();
     public static List<portScanHorizontalTracker>  portScanHorizontalThreats =  new ArrayList<>();
     public static List<denialOfServiceTracker> denialOfServiceThreats = new ArrayList<>();
+    public static List<denialOfServiceTracker> denialOfServiceThreatsFiltered = new ArrayList<>();
 
+
+    public static List<String> attackIPs  = new ArrayList<>();
     // contains all instantiated logs
     public static void organiseLogs(String filename) throws IOException {
 
@@ -32,21 +36,29 @@ public class logCollection {
         portScanHorizontalThreats = activityAnalyser.getPortScanHorizontalThreats();
         denialOfServiceThreats = activityAnalyser.getDenialOfServiceThreats();
 
-
         for (bruteForceTracker threat : bruteForceThreats){ // Repeat for others
             threat.setThreat();
+            attackIPs.add(threat.getSrc());
         }
         for (passwordSprayTracker threat : passwordSprayThreats){
             threat.setThreat();
+            attackIPs.add(threat.getSrc());
         }
         for (portScanVerticalTracker threat : portScanVerticalThreats){
             threat.setThreat();
+            attackIPs.add(threat.getSrc());
         }
         for (portScanHorizontalTracker threat : portScanHorizontalThreats){
             threat.setThreat();
+            attackIPs.add(threat.getSrc());
         }
+
+
         for (denialOfServiceTracker threat : denialOfServiceThreats){
             threat.setThreat();
+            if (!(attackIPs.contains(threat.getSrc()))){
+                denialOfServiceThreatsFiltered.add(threat);
+            }
         }
 
 
