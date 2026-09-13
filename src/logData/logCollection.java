@@ -9,6 +9,7 @@ import java.util.List;
 public class logCollection {
     private static List<log> collectionLogs = new ArrayList<>();
 
+    public static List<injectionSQLTracker> injectionThreats = new ArrayList<>();
     public static List<bruteForceTracker> bruteForceThreats = new ArrayList<>();
     public static List<passwordSprayTracker> passwordSprayThreats = new ArrayList<>();
     public static List<portScanVerticalTracker>  portScanVerticalThreats = new ArrayList<>();
@@ -23,6 +24,7 @@ public class logCollection {
 
         while(logReader.endOfFile != true){
             collectionLogs.addAll(logReader.fileReader(filename));
+            activityAnalyser.injection_SQL_Detection(collectionLogs);
             activityAnalyser.bruteForceDetector(collectionLogs);
             activityAnalyser.passwordSprayDetector(collectionLogs);
             activityAnalyser.portScanVerticalDetector(collectionLogs);
@@ -30,6 +32,7 @@ public class logCollection {
             activityAnalyser.denialOfServiceDetector(collectionLogs);
         }
 
+        injectionThreats = activityAnalyser.getInjectionThreats();
         bruteForceThreats = activityAnalyser.getBruteForceThreats();
         passwordSprayThreats = activityAnalyser.getPasswordSprayThreats();
         portScanVerticalThreats = activityAnalyser.getPortScanVerticalThreats();
@@ -51,6 +54,11 @@ public class logCollection {
         for (portScanHorizontalTracker threat : portScanHorizontalThreats){
             threat.setThreat();
             attackIPs.add(threat.getSrc());
+        }
+
+
+        for (injectionSQLTracker threat : injectionThreats){
+            threat.setThreat();
         }
 
 

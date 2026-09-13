@@ -7,7 +7,7 @@ import java.io.IOException;
 // test
 public class Main {
     public static void main (String[] args) throws IOException {
-        logCollection.organiseLogs("test_logs.cef");
+        logCollection.organiseLogs("test_logs_v2.cef");
 
         System.out.println("Brute Force:");
         for (bruteForceTracker tracker : logCollection.bruteForceThreats){
@@ -27,6 +27,10 @@ public class Main {
         }
         System.out.println("Denial Of Service");
         for (denialOfServiceTracker tracker : logCollection.denialOfServiceThreatsFiltered){
+            System.out.println(tracker);
+        }
+        System.out.println("SQL Injection");
+        for (injectionSQLTracker tracker : logCollection.injectionThreats){
             System.out.println(tracker);
         }
     }

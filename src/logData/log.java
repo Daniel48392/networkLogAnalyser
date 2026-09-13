@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+
 import static java.lang.Integer.parseInt;
 
 
@@ -28,8 +30,13 @@ public class log { // CEF - common event format
     private String msg;
     private String proto; // Protocol
 
+    //Injection Detection
+    private boolean injection; // Does the log look like an SQL injection
+    private String rawLog;
 
     public log(String rawLog){
+        this.rawLog = rawLog;
+
         int dividerOne = rawLog.indexOf("|");
         int dividerTwo = rawLog.indexOf("|", dividerOne +1);
         int dividerThree = rawLog.indexOf("|", dividerTwo +1);
@@ -112,7 +119,7 @@ public class log { // CEF - common event format
             try { // Handles it in the case of EpochMilli format
                 rt = Instant.ofEpochMilli(Long.parseLong(rawExtensions.substring(rawExtensions.indexOf("rt=") + 3, logExtensionParser.spaceFinder(rawExtensions, "rt=")))); // Fix
             }catch (NumberFormatException e){ // if its date format it will be caught and then the date format will be parsed
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd yyyy HH:mm:ss");
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MMM dd yyyy HH:mm:ss", Locale.ENGLISH);
                 LocalDateTime dateTime = LocalDateTime.parse(rawExtensions.substring(rawExtensions.indexOf("rt=") + 3, logExtensionParser.spaceFinder(rawExtensions, "rt=")), formatter);
                 rt = dateTime.toInstant(ZoneOffset.UTC);
             }
@@ -137,6 +144,13 @@ public class log { // CEF - common event format
         }
         else {
             proto = null;
+        }
+
+        if (rawLog.toLowerCase().contains("sql injection") || rawLog.toLowerCase().matches(".*(\\bor\\b\\s+\\d+\\s*=\\s*\\d+|\\bunion\\b\\s+select|--|;\\s*drop\\b|\\bexec(\\s|\\()|xp_cmdshell|information_schema|\\bsleep\\(|\\bwaitfor\\s+delay|'\\s*or\\s*'1'\\s*=\\s*'1).*")) {
+            injection = true;
+        }
+        else {
+            injection = false;
         }
     }
 
@@ -206,6 +220,14 @@ public class log { // CEF - common event format
 
     public String getProto() {
         return proto;
+    }
+
+    public boolean getInjection() {
+        return injection;
+    }
+
+    public String getRawLog() {
+        return rawLog;
     }
 
     @Override

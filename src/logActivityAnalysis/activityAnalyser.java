@@ -1,9 +1,5 @@
 package logActivityAnalysis;
-import logActivityAnalysis.activityTrackers.bruteForceTracker;
-import logActivityAnalysis.activityTrackers.passwordSprayTracker;
-import logActivityAnalysis.activityTrackers.portScanHorizontalTracker;
-import logActivityAnalysis.activityTrackers.portScanVerticalTracker;
-import logActivityAnalysis.activityTrackers.denialOfServiceTracker;
+import logActivityAnalysis.activityTrackers.*;
 import logData.log;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,6 +7,9 @@ import java.util.List;
 
 
 public class activityAnalyser {
+    record InjectionKey (String src, String dst){}
+    private static HashMap<InjectionKey, injectionSQLTracker> injectionSuspects = new HashMap<>();
+
     record BruteForceKey (String src, String dst){} // Key used in bruteSuspect hashmap
     private static HashMap<BruteForceKey, bruteForceTracker> bruteSuspect = new HashMap<>(); // Brute Force key with the bruteForeTracker class
 
@@ -26,9 +25,30 @@ public class activityAnalyser {
 
     private static HashMap<String, denialOfServiceTracker> denialOfServiceSuspect = new HashMap<>();
 
+    public static void injection_SQL_Detection(List<log> collectionLog){
+        for (log log : collectionLog) {
+            if (log.getInjection()){
+                InjectionKey key = new InjectionKey(log.getSrc(), log.getDst());
+                if (injectionSuspects.containsKey(key)){
+                    injectionSQLTracker tracker = injectionSuspects.get(key);
+                    tracker.injectionAttempt(log.getRawLog(), log.getRt());
+                } else {
+                    injectionSQLTracker tracker = new injectionSQLTracker(log.getRawLog(), log.getSrc(), log.getDpt(), log.getDst(), log.getRt());
+                    injectionSuspects.put(key, tracker);
+                }
+            }
+        }
+    }
+
+    public static List<injectionSQLTracker> getInjectionThreats(){
+        return new ArrayList<>(injectionSuspects.values());
+    }
+
+
+
     public static void bruteForceDetector(List<log> collectionLog){
         for (log log : collectionLog) { // For every logData.log in the collection
-            if (!(log.getDuser() == null)) { // if the logData.log contains a destination user
+            if (!(log.getDuser() == null) && !log.getInjection()) { // if the logData.log contains a destination user
                 BruteForceKey key = new BruteForceKey(log.getSrc(), log.getDuser()); // Creates key out of source IP and destination user
                 if (bruteSuspect.containsKey(key)) { // If the hashmap contains the Record key in the key value
                     bruteForceTracker tracker = bruteSuspect.get(key); // finds the bruteForceTracker object using the key
@@ -40,7 +60,7 @@ public class activityAnalyser {
                     bruteForceTracker.attemptCheck(tracker, log.getEventReadable(), log.getMsg(), log.getAct());
                 }
             }
-            else if (!(log.getSuser() == null)) {
+            else if (!(log.getSuser() == null) && !log.getInjection()) {
                 BruteForceKey key = new BruteForceKey(log.getSrc(), log.getSuser()); // Creates key out of source IP and destination user
                 if (bruteSuspect.containsKey(key)) { // If the hashmap contains the Record key in the key value
                     bruteForceTracker tracker = bruteSuspect.get(key); // finds the bruteForceTracker object using the key
@@ -73,7 +93,7 @@ public class activityAnalyser {
 
     public static void passwordSprayDetector(List<log> collectionLog){
         for (log log : collectionLog) {
-            if (!(log.getDuser() == null)) {
+            if (!(log.getDuser() == null) && !log.getInjection()) {
                 String key = log.getSrc();
                 if (spraySuspect.containsKey(key)) {
                     passwordSprayTracker tracker = spraySuspect.get(key);
@@ -85,7 +105,7 @@ public class activityAnalyser {
                     passwordSprayTracker.attemptCheck(tracker, log.getEventReadable(), log.getMsg(), log.getAct());
                 }
             }
-            else if (!(log.getSuser() == null)) { // When Suser is the source of the attack failed logins on Suser
+            else if (!(log.getSuser() == null) && !log.getInjection()) { // When Suser is the source of the attack failed logins on Suser
                 String key = log.getSrc();
                 if (spraySuspect.containsKey(key)) {
                     passwordSprayTracker tracker = spraySuspect.get(key);
@@ -114,7 +134,7 @@ public class activityAnalyser {
 
     public static void portScanVerticalDetector(List<log> collectionLog){
         for  (log log : collectionLog) {
-            if (!(log.getDpt() == null)) {
+            if (!(log.getDpt() == null) && !log.getInjection()) {
                 verticalPortScanKey key = new verticalPortScanKey(log.getSrc(), log.getDst());
                 if (verticalScanSuspect.containsKey(key)) {
                     portScanVerticalTracker tracker = verticalScanSuspect.get(key);
@@ -142,7 +162,7 @@ public class activityAnalyser {
 
     public static void portScanHorizontalDetector(List<log> collectionLog){
         for  (log log : collectionLog) {
-            if (!(log.getDst() == null)&&!(log.getDpt() == null)) {
+            if (!(log.getDst() == null)&&!(log.getDpt() == null) && !log.getInjection()) {
                 horizontalPortScanKey key = new horizontalPortScanKey(log.getSrc(), log.getDpt());
                 if (horizontalScanSuspect.containsKey(key)) {
                     portScanHorizontalTracker tracker = horizontalScanSuspect.get(key);
@@ -169,7 +189,7 @@ public class activityAnalyser {
 
     public static void denialOfServiceDetector (List<log> collectionLog){
         for  (log log : collectionLog) {
-            if (!(log.getSrc() == null)&&!(log.getDpt() == null)) {
+            if (!(log.getSrc() == null)&&!(log.getDpt() == null) && !log.getInjection()) {
                 String key = log.getSrc();
                 if (denialOfServiceSuspect.containsKey(key)) {
                     denialOfServiceTracker tracker = denialOfServiceSuspect.get(key);

@@ -10,10 +10,10 @@ public class portScanHorizontalTracker extends tracker {
     private final Instant firstSeen;
     private Instant lastSeen;
 
-    public portScanHorizontalTracker(String src, String dst, String dport, Instant firstSeen) {
+    public portScanHorizontalTracker(String src, String dst, String dpt, Instant firstSeen) {
         this.src = src;
         this.dsts.add(dst);
-        this.dpt = dport;
+        this.dpt = dpt;
         this.count+=1;
         this.firstSeen = firstSeen;
         this.lastSeen = firstSeen;
