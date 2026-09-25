@@ -8,7 +8,9 @@ import java.util.Locale;
 
 import static java.lang.Integer.parseInt;
 
-
+/**
+ * Log class which is created from a single line of CEF log
+ */
 public class log { // CEF - common event format
     private String cef_version;
     private String vendor; // vendor of product
@@ -34,6 +36,10 @@ public class log { // CEF - common event format
     private boolean injection; // Does the log look like an SQL injection
     private String rawLog;
 
+    /**
+     * Constructor for the log object
+     * @param rawLog - raw CEF line
+     */
     public log(String rawLog){
         this.rawLog = rawLog;
 
@@ -55,7 +61,7 @@ public class log { // CEF - common event format
         try {
             severity = parseInt(rawLog.substring(dividerSix+1, dividerSeven));
         }
-        catch (NumberFormatException e) {
+        catch (NumberFormatException e) { // When severity isn't an integer
             if (rawLog.substring(dividerSix+1, dividerSeven).toLowerCase().equals("very low") || rawLog.substring(dividerSix+1, dividerSeven).toLowerCase().equals("informational")) {
                 severity = 0;
             }
@@ -230,6 +236,10 @@ public class log { // CEF - common event format
         return rawLog;
     }
 
+    /**
+     * toString
+     * @return toString format of log
+     */
     @Override
     public String toString() {
         return "logData.log{" +
