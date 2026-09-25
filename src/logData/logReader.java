@@ -1,7 +1,6 @@
 package logData;
 
 import java.io.IOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,8 +8,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 
 
-public class logReader { // takes .logData.log files and txt files
+public class logReader {
     public static Integer logsRead = 0;
+    public static Integer logsReadTarget = 5000; // Placeholder
     public static boolean endOfFile = false;
     public static List<log> fileReader(String filename) throws IOException {
         List<log> logs = new ArrayList<>(); // List of logs
@@ -24,10 +24,11 @@ public class logReader { // takes .logData.log files and txt files
                 }
                 logsRead++;
                 logs.add(new log(rawLog));
-            } while ((logsRead<(logsRead+5000)));
+            } while (true);
         } catch (IOException e) {
             throw new IOException("Cannot find file under: " + filename);
         }
+        logsReadTarget +=5000; // Placeholder
         return logs;
     }
 }
