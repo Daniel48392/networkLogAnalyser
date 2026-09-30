@@ -5,26 +5,39 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-
+/**
+ * Contains all the static methods and attributes that sort the logs into potential attacks
+ */
 public class activityAnalyser {
-    record InjectionKey (String src, String dst){}
-    private static HashMap<InjectionKey, injectionSQLTracker> injectionSuspects = new HashMap<>();
+    record InjectionKey (String src, String dst){} // makes unique key for hashmap for injection attacks
+    private static HashMap<InjectionKey, injectionSQLTracker> injectionSuspects = new HashMap<>(); // hashmap for injection attacks
 
     record BruteForceKey (String src, String dst){} // Key used in bruteSuspect hashmap
     private static HashMap<BruteForceKey, bruteForceTracker> bruteSuspect = new HashMap<>(); // Brute Force key with the bruteForeTracker class
 
-    private static HashMap<String, passwordSprayTracker> spraySuspect = new HashMap<>();
+    private static HashMap<String, passwordSprayTracker> spraySuspect = new HashMap<>(); // hashmap for password spray attacks
 
 
-    record verticalPortScanKey (String src, String dst){}
-    private static HashMap<verticalPortScanKey, portScanVerticalTracker> verticalScanSuspect = new HashMap<>();
+    record verticalPortScanKey (String src, String dst){} // creates unique key for vertical port scan attacks and is used in the vertical port scan attacks hashmap
+    private static HashMap<verticalPortScanKey, portScanVerticalTracker> verticalScanSuspect = new HashMap<>(); // hashmap for vertical port scans
 
-    record horizontalPortScanKey(String src, String dport){}
-    private static HashMap<horizontalPortScanKey, portScanHorizontalTracker> horizontalScanSuspect = new HashMap<>();
+    record horizontalPortScanKey(String src, String dport){} // creates unique key for horizontal port scan attacks and is used in the horizontal port scan attacks hashmap
+    private static HashMap<horizontalPortScanKey, portScanHorizontalTracker> horizontalScanSuspect = new HashMap<>(); // hashmap for horizontal port scans
 
 
-    private static HashMap<String, denialOfServiceTracker> denialOfServiceSuspect = new HashMap<>();
+    private static HashMap<String, denialOfServiceTracker> denialOfServiceSuspect = new HashMap<>(); // hashmap for denial of service attacks
 
+    /**
+     * Iterates through each log and checks if the Injection value is true then adds it as a tracker to the hashmap
+     * or increments an existing tracker
+     * <p>
+     *     Checks if getInjection is true, then creates the key out of the logs attributes, if the hashmap already contains the
+     *     key the tracker value matching that key is returned from the hashmap and then .injectionAttempt is run and the logs
+     *     information is passed into the tracker, if it is new the log instead gets instantiated into a injectionSQLTracker object and added
+     *     to the hashmap with its key
+     * </p>
+     * @param collectionLog - all the log objects instantiated from the CEF source file
+     */
     public static void injection_SQL_Detection(List<log> collectionLog){
         for (log log : collectionLog) {
             if (log.getInjection()){
@@ -40,12 +53,27 @@ public class activityAnalyser {
         }
     }
 
+    /**
+     * Returns an ArrayList of all the values in the injectionSuspects hashmap
+     * @return ArrayList of all the values in the injectionSuspects hashmap
+     */
     public static List<injectionSQLTracker> getInjectionThreats(){
         return new ArrayList<>(injectionSuspects.values());
     }
 
 
-
+    /**
+     * Iterates through each log and checks if the suser or duser isn't null then adds it as a tracker to the hashmap
+     * or increments an existing tracker
+     * <p>
+     *     Iterates through the logs checking that the logs aren't injection attacks and contain either suser or duser,
+     *     if they do a key is then made and the hashmap gets checked if that key exists in it, if it does the tracker using that
+     *     key in the hashmap is then incremented using the values from the current log, otherwise if it's new the log gets
+     *     a bruteForceTracker instantiated from. With every log that is added to the hashmap either through incrementation
+     *     or instantiation attemptCheck is always ran.
+     * </p>
+     * @param collectionLog - all the log objects instantiated from the CEF source file
+     */
     public static void bruteForceDetector(List<log> collectionLog){
         for (log log : collectionLog) { // For every logData.log in the collection
             if (!(log.getDuser() == null) && !log.getInjection()) { // if the logData.log contains a destination user
@@ -76,21 +104,33 @@ public class activityAnalyser {
         bruteSuspect.keySet().removeIf(key -> bruteSuspect.get(key).getCount() < 3);
     }
 
-
+    /**
+     * Creates an array list for brute force trackers, each value from the hashmap is iterated through, if the
+     * bruteForceTracker contains more than 8 attempts it gets added to the list of threats
+     * @return arrayList of bruteForceTracker threats
+     */
     public static List<bruteForceTracker> getBruteForceThreats(){
         List<bruteForceTracker> threats = new ArrayList<>();
         for (bruteForceTracker tracker : bruteSuspect.values()) { // for every bruteForceTracker in the hashmap
             if (tracker.getCount() > 8) {
-                threats.add(tracker); // Filters out attacks with more than 10 attempts
+                threats.add(tracker); // Filters out attacks with more than 8 attempts
             }
         }
         return threats;
     }
 
 
-
-
-
+    /**
+     * Iterates through each log and checks if suser or duser isn't null then adds it as a tracker to the hashmap
+     * or increments an existing tracker
+     * <p>
+     *     Iterates through each log, checks if suser or duser isn't null, and it isn't an injection attack, then uses the
+     *     source IP to create a key, if the key already exists in the hashmap the tracker under that key is retrieved from the hashmap
+     *     and is incremented using the current log, otherwise a passwordSprayTracker is instantiated out of the log in both these
+     *     scenarios a .attemptCheck is run on the tracker.
+     * </p>
+     * @param collectionLog - all the log objects instantiated from the CEF source file
+     */
     public static void passwordSprayDetector(List<log> collectionLog){
         for (log log : collectionLog) {
             if (!(log.getDuser() == null) && !log.getInjection()) {
@@ -121,7 +161,11 @@ public class activityAnalyser {
         spraySuspect.keySet().removeIf(key -> spraySuspect.get(key).getCount() < 3);
     }
 
-
+    /**
+     * Creates an array list for password spray threats, each value from the hashmap is iterated through, if the
+     * passwordSprayTracker contains more than 8 attempts it gets added to the list of threats
+     * @return arrayList of passwordSpray threats
+     */
     public static List<passwordSprayTracker> getPasswordSprayThreats(){
         List<passwordSprayTracker> threats = new ArrayList<>();
         for (passwordSprayTracker tracker : spraySuspect.values()) {
@@ -132,6 +176,10 @@ public class activityAnalyser {
         return threats;
     }
 
+    /**
+     *
+     * @param collectionLog - all the log objects instantiated from the CEF source file
+     */
     public static void portScanVerticalDetector(List<log> collectionLog){
         for  (log log : collectionLog) {
             if (!(log.getDpt() == null) && !log.getInjection()) {
@@ -159,7 +207,10 @@ public class activityAnalyser {
     }
 
 
-
+    /**
+     *
+     * @param collectionLog - all the log objects instantiated from the CEF source file
+     */
     public static void portScanHorizontalDetector(List<log> collectionLog){
         for  (log log : collectionLog) {
             if (!(log.getDst() == null)&&!(log.getDpt() == null) && !log.getInjection()) {
@@ -186,7 +237,10 @@ public class activityAnalyser {
         return threats;
     }
 
-
+    /**
+     *
+     * @param collectionLog - all the log objects instantiated from the CEF source file
+     */
     public static void denialOfServiceDetector (List<log> collectionLog){
         for  (log log : collectionLog) {
             if (!(log.getSrc() == null)&&!(log.getDpt() == null) && !log.getInjection()) {
@@ -212,17 +266,4 @@ public class activityAnalyser {
         }
         return threats;
     }
-
-
-
-
-
-    // DDOS multiple of the similar logs
-    // SQL or injection attempts
-
-
-
-
-
-
 }
