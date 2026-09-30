@@ -26,7 +26,7 @@ public class passwordSprayTracker extends tracker{
     }
 
     public static void attemptCheck(passwordSprayTracker tracker, String eventReadable, String msg, String act){
-        if (!(eventReadable == null)) {
+        if ((eventReadable.toLowerCase().contains("fail") || eventReadable.toLowerCase().contains("invalid") || eventReadable.toLowerCase().contains("incorrect") || eventReadable.toLowerCase().contains("denied") || eventReadable.toLowerCase().contains("success") || eventReadable.toLowerCase().contains("valid") || eventReadable.toLowerCase().contains("grant"))) {
             if (eventReadable.toLowerCase().contains("fail") || eventReadable.toLowerCase().contains("invalid") || eventReadable.toLowerCase().contains("incorrect") || eventReadable.toLowerCase().contains("denied")) {
                 tracker.FailedAttempts++;
             } else if (eventReadable.toLowerCase().contains("success") || eventReadable.toLowerCase().contains("valid") || eventReadable.toLowerCase().contains("grant")) {
