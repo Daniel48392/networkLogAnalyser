@@ -53,11 +53,46 @@ git clone https://github.com/Daniel48392/networkLogAnalyser.git
 cd networkLogAnalyser
 ```
  
-### Run
- 
-Run in Main.java and put the log files to be analysed in /logs directory, then in the first line of the public static main method, change the string in logCollection.organiseLogs(...) to your desired filename.
-Then run Main.java.
- 
+### Add Your Log File
+
+Place the CEF log file you want to analyse in the `logs` directory.
+
+For example:
+```
+    networkLogAnalyser/
+    ├── logs/
+    │   └── test_logs_v2.cef
+    ├── src/
+    │   ├── Main.java
+    │   ├── logData/
+    │   └── logActivityAnalysis/
+    └── README.md
+```
+### Compile the Source Code
+
+From the project root directory, run:
+``` bash
+javac -d out src\Main.java src\logData\*.java src\logActivityAnalysis\*.java
+```
+This compiles the Java source files and places the resulting `.class` files in the `out` directory, creating the required package folders automatically.
+
+
+### Run the Analyser
+
+Run the following command from the project root directory:
+``` bash
+java -cp out Main example.cef
+```
+Replace `example.cef` with the name of the CEF log file you want to analyse.
+
+The program reads the specified file from the `logs` directory and prints the analysis results to the terminal.
+
+### Example
+
+To analyse a file named `my_security_logs.cef`, place it in the `logs` directory and run:
+``` bash
+java -cp out Main my_security_logs.cef
+```
 ## Log Format
  
 Logs must be in CEF, one event per line:
@@ -123,7 +158,6 @@ Threat Level: 0.12 |Medium|
 Results are printed in sections: Brute Force, Password Spray, Vertical Port Scan, Horizontal Port Scan, Denial Of Service and SQL Injection. (The values above are illustrative.)
  
 ## Known Limitations and Roadmap
-- The input filename is hard-coded in `Main.java`.
 - Distributed denial of service (DDoS) detection is a placeholder (`distributedDenialofServiceMonitor`), future improvement to add DDOS detection instead of outputing many individual DOS attacks.
 - The threat scoring system is basic and marked for rework.
 - The CEF extension parser can misread values that contain a space followed by an `=` sign.
