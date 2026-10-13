@@ -15,7 +15,7 @@ public class Main {
      * @throws IOException - filename not found
      */
     public static void main (String[] args) throws IOException {
-        logCollection.organiseLogs("test_logs_v2.cef"); //<-------------- Input Log
+        logCollection.organiseLogs(args[0]);
 
         System.out.println("Brute Force:");
         for (bruteForceTracker tracker : logCollection.bruteForceThreats){
