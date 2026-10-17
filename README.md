@@ -126,7 +126,7 @@ All logs are read and parsed first. Each attack detector then groups. Logs flagg
  
 | Attack | Grouped by | What is counted | Reported when |
 | ------ | ---------- | --------------- | ------------- |
-| Brute force | Source IP + destination IP | Login attempts (classified as failed, successful or unknown) | More than 8 attempts |
+| Brute force | Source IP + User | Login attempts (classified as failed, successful or unknown) | More than 8 attempts |
 | Password spray | Source IP | Distinct accounts targeted | More than 8 accounts |
 | Vertical port scan | Source IP + destination IP | Distinct destination ports | More than 10 ports |
 | Horizontal port scan | Source IP + destination port | Distinct destination IPs | More than 10 IPs |
