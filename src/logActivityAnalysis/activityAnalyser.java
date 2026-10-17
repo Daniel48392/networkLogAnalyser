@@ -12,7 +12,7 @@ public class activityAnalyser {
     record InjectionKey (String src, String dst){} // makes unique key for hashmap for injection attacks
     private static HashMap<InjectionKey, injectionSQLTracker> injectionSuspects = new HashMap<>(); // hashmap for injection attacks
 
-    record BruteForceKey (String src, String dst){} // Key used in bruteSuspect hashmap
+    record BruteForceKey (String src, String user){} // Key used in bruteSuspect hashmap
     private static HashMap<BruteForceKey, bruteForceTracker> bruteSuspect = new HashMap<>(); // Brute Force key with the bruteForeTracker class
 
     private static HashMap<String, passwordSprayTracker> spraySuspect = new HashMap<>(); // hashmap for password spray attacks
