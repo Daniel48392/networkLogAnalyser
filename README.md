@@ -72,7 +72,7 @@ For example:
 
 From the project root directory, run:
 ``` bash
-javac -d out src\Main.java src\logData\*.java src\logActivityAnalysis\*.java
+javac -d out src\Main.java src\logData\*.java src\logActivityAnalysis\*.java src\logActivityAnalysis\activityTrackers\*.java
 ```
 This compiles the Java source files and places the resulting `.class` files in the `out` directory, creating the required package folders automatically.
 
